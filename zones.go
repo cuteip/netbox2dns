@@ -269,7 +269,7 @@ func (z *Zones) AddAddrs(addrs netbox.IPAddrs) error {
 
 			err := z.AddRecord(&forward)
 			if err != nil {
-				return fmt.Errorf("Unable to add forward record for %q: %v", addr.DNSName, err)
+				log.Warningf("Unable to add forward record: %v", err)
 			}
 			err = z.AddRecord(&reverse)
 			if err != nil {
