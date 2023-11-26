@@ -2,6 +2,7 @@ package netbox2dns
 
 import (
 	"context"
+	"os"
 	"strings"
 
 	"github.com/shuLhan/share/lib/dns"
@@ -15,6 +16,17 @@ type ZoneFileDNS struct {
 
 // NewZoneFileDNS creates a new ZoneFileDNS object.
 func NewZoneFileDNS(ctx context.Context, cz *ConfigZone) (*ZoneFileDNS, error) {
+	// dns.ParseZoneFile() は既にファイルが存在していることを期待している
+	_, err := os.Stat(cz.Filename)
+	if os.IsNotExist(err) {
+		_, err = os.Create(cz.Filename)
+		if err != nil {
+			return nil, err
+		}
+	} else if err != nil {
+		return nil, err
+	}
+
 	zone, err := dns.ParseZoneFile(cz.Filename, cz.Name, uint32(cz.TTL))
 	if err != nil {
 		return nil, err
