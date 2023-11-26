@@ -16,8 +16,6 @@ config:
     - name: "10.in-addr.arpa"
       zonetype: "zonefile"
       filename: "/tmp/10.in-addr.arpa.zone"
-      delete_entries: true
     - name: "0.0.0.0.ip6.arpa"
       zonetype: "zonefile"
       filename: "/tmp/0.0.0.0.ip6.arpa.zone"
-      delete_entries: true

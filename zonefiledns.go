@@ -44,11 +44,10 @@ func NewZoneFileDNS(ctx context.Context, cz *ConfigZone) (*ZoneFileDNS, error) {
 // populates the ZoneFileDNS with them.
 func (zfd *ZoneFileDNS) ImportZone(cz *ConfigZone) (*Zone, error) {
 	zone := &Zone{
-		Name:          cz.Name,
-		Filename:      cz.Filename,
-		TTL:           cz.TTL,
-		DeleteEntries: cz.DeleteEntries,
-		Records:       make(map[string][]*Record),
+		Name:     cz.Name,
+		Filename: cz.Filename,
+		TTL:      cz.TTL,
+		Records:  make(map[string][]*Record),
 	}
 
 	for _, i := range zfd.zone.Records {

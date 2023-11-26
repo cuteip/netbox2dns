@@ -7,7 +7,6 @@
 	name:            string
 	filename:        string
 	ttl:             *config.defaults.ttl | int & >60 & <=86400
-	delete_entries?: *false | bool // Remove entries that are missing
 	...
 }
 

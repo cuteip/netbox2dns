@@ -96,9 +96,6 @@ func valueTest(t *testing.T, cfg *Config, err error) {
 	if z.TTL != 300 {
 		t.Errorf("z.TTL wrong; got %d want 300", z.TTL)
 	}
-	if z.DeleteEntries != true {
-		t.Errorf("z.DeleteEntries wrong; want true")
-	}
 }
 
 func TestValidateYaml(t *testing.T) {

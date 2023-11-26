@@ -61,11 +61,10 @@ func (z *Zones) AddZone(zone *Zone) {
 // automatically.
 func (z *Zones) NewZone(cz *ConfigZone) {
 	zone := Zone{
-		Name:          cz.Name,
-		Filename:      cz.Filename,
-		DeleteEntries: cz.DeleteEntries,
-		TTL:           cz.TTL,
-		Records:       make(map[string][]*Record),
+		Name:     cz.Name,
+		Filename: cz.Filename,
+		TTL:      cz.TTL,
+		Records:  make(map[string][]*Record),
 	}
 	z.AddZone(&zone)
 }
@@ -115,11 +114,10 @@ func (z *Zones) Compare(newer *Zones) []*ZoneDelta {
 
 // Zone represents a single DNS zone on a single provider (fixed zone files, etc).
 type Zone struct {
-	Name          string
-	Filename      string
-	DeleteEntries bool
-	TTL           int64
-	Records       map[string][]*Record
+	Name     string
+	Filename string
+	TTL      int64
+	Records  map[string][]*Record
 }
 
 // AddRecord adds a single record to this zone.  It does not check
@@ -150,9 +148,7 @@ func (z *Zone) Compare(newer *Zone, zd *ZoneDelta) {
 			zd.AddRecords[k] = newer.Records[k]
 		} else if newer.Records[k] == nil {
 			// Only in 'z'
-			if z.DeleteEntries {
-				zd.RemoveRecords[k] = z.Records[k]
-			}
+			zd.RemoveRecords[k] = z.Records[k]
 		} else {
 			CompareRecordSets(z.Records[k], newer.Records[k], zd)
 		}

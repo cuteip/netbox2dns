@@ -39,11 +39,10 @@ type Config struct {
 
 // ConfigZone matches `Zone` in `config.cue`.
 type ConfigZone struct {
-	ZoneType      string `json:"zonetype,omitempty"`
-	Name          string `json:"name,omitempty"`
-	Filename      string `json:"filename,omitempty"`
-	TTL           int64  `json:"ttl,omitempty"`
-	DeleteEntries bool   `json:"delete_entries,omitempty"`
+	ZoneType string `json:"zonetype,omitempty"`
+	Name     string `json:"name,omitempty"`
+	Filename string `json:"filename,omitempty"`
+	TTL      int64  `json:"ttl,omitempty"`
 }
 
 // This causes "config.cue" in the current directory to be embedded

@@ -19,12 +19,10 @@ config: {
 		},
 		{name: "10.in-addr.arpa"
 			filename:       "reverse-v4-10.zone"
-			delete_entries: true
  			zonetype: "zonefile"
 		},
 		{name: "0.0.0.0.ip6.arpa"
 			filename:       "reverse-v6-0000.zone"
-			delete_entries: true
  			zonetype: "zonefile"
 		},
 	]

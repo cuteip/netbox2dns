@@ -47,11 +47,9 @@ config:
     - name: "10.in-addr.arpa"
       zonetype: "zonefile"
       filename: "/etc/dns/10.in-addr.arpa.zone"
-      delete_entries: true
     - name: "0.0.0.0.ip6.arpa"
       zonetype: "zonefile"
       filename: "/etc/dns/0.0.0.0.ip6.arpa.zone"
-      delete_entries: true
 ```
 
 Each zone needs to specify a name and a zonetype.  Currently supported
@@ -93,11 +91,3 @@ and IPv6 should be handled automatically.
 This tool has 2 operating modes, `diff` and `push`.  `diff` shows
 significant differences between DNS zones and Netbox, and `push` makes
 changes to DNS.
-
-By default, netbox2dns will only *add* records from Netbox, and will
-not remove DNS records for IP addresses that are not in Netbox.  In
-cases where Netbox is authoritative for zone information, you can add
-the `delete_entries: true` setting for each zone in the config file.
-This will make netbox2dns remove unknown A, AAAA, or PTR records from
-Google Cloud DNS.  This makes the most sense for reverse DNS, when
-Netbox is the source of truth for all IP address assignement.
