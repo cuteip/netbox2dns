@@ -1,18 +1,25 @@
 # netbox2dns
 
+original: https://github.com/scottlaird/netbox2dns
+
 netbox2dns is a tool for publishing DNS records from [Netbox](http://netbox.dev) data.
 
 Netbox provides a reasonable interface for managing and documenting IP
 addresses and network devices, but out of the box there's no good way
 to publish Netbox's data into DNS.  This tool is designed to publish
-A, AAAA, and PTR records from Netbox into Google Cloud DNS.  It should
+A, AAAA, and PTR records from Netbox into zonefile.  It should
 be possible to add other DNS providers without too much work, as long
 as they're able to handle incremental record additions and removals.
+
+## fork 元との差分
+
+- netbox2dns にて forward zone が管理されていない場合でもエラーにしない
+- ゾーンファイルが存在しない場合にエラーにせず空ファイルを作成する
 
 ## Compiling
 
 Check out a copy of the `netbox2dns` code from GitHub using `git clone
-https://github.com/scottlaird/netbox2dns.git`.  Then, run `go build
+https://github.com/cuteip/netbox2dns.git`.  Then, run `go build
 cmd/netbox2dns/netbox2dns.go`, and it should generate a `netbox2dns`
 binary.  This can be copied to other directories or other systems as
 needed.
@@ -23,46 +30,37 @@ Edit `netbox2dns.yaml`.  Here is an example config:
 
 ```yaml
 config:
-  netbox: 
+  netbox:
     host:  "netbox.example.com"
     token: "01234567890abcdef"
 
   defaults:
-    project: "google-cloud-dns-project-name-123456"
     ttl: 300
-  
-  zones: 
+
+  zones:
     - name: "internal.example.com"
-      zonetype: "clouddns"
-      zonename: "internal-example-com"
+      zonetype: "zonefile"
+      filename: "/etc/dns/internal.example.com.zone"
     - name: "example.com"
       zonetype: "zonefile"
       filename: "/etc/dns/example.com.zone"
     - name: "10.in-addr.arpa"
-      zonetype: "clouddns"
-      zonename: "reverse-v4-10"
+      zonetype: "zonefile"
+      filename: "/etc/dns/10.in-addr.arpa.zone"
       delete_entries: true
     - name: "0.0.0.0.ip6.arpa"
-      zonetype: "clouddns"
-      zonename: "reverse-v6-0000"
+      zonetype: "zonefile"
+      filename: "/etc/dns/0.0.0.0.ip6.arpa.zone"
       delete_entries: true
 ```
 
 Each zone needs to specify a name and a zonetype.  Currently supported
-zonetypes are `clouddns` for Google Cloud DNS and `zonefile` for text
+zonetype is `zonefile` for text
 zone files.  See `config.cue` for an authoratative list of parameters
 per zone.
 
 To talk to Netbox, you'll need to provide your Netbox host, a Netbox
 API token with (at a minimum) read access to Netbox's IP Address data.
-
-To talk to Google Cloud DNS, you'll need to specify a project ID.
-This should match the Google Cloud project name that hosts your DNS
-records on console.cloud.google.com.  For now, netbox2dns uses
-[Application Default
-Credentials](https://cloud.google.com/docs/authentication/application-default-credentials).
-See Google's documentation for how to set these up using the `gcloud`
-CLI.
 
 Finally, list your zones. When adding new records, netbox2dns will add
 records to the *longest* matching zone name.  For the example above,
