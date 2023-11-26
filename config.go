@@ -32,23 +32,16 @@ type Config struct {
 	Defaults struct {
 		Zonetype string `json:"zonetype,omitempty"`
 		TTL      int64  `json:"ttl,omitempty"`
-		Project  string `json:"project,omitempty"`
 	} `json:"defaults,omitempty"`
 	ZoneMap map[string]*ConfigZone `json:"zonemap,omitempty"`
 	Zones   []*ConfigZone          `json:"zones,omitempty"`
 }
 
-// ConfigZone matches `Zone` in `config.cue`.  This needs to be
-// the union of all defined zone types.  At the moment, this is only
-// CloudDNSZone, but other types are possible.  They're switched based
-// on the `ZoneType` field.  Then, code in `dns.go` uses that to
-// dispatch to the correct back-end handler.
+// ConfigZone matches `Zone` in `config.cue`.
 type ConfigZone struct {
 	ZoneType      string `json:"zonetype,omitempty"`
 	Name          string `json:"name,omitempty"`
-	ZoneName      string `json:"zonename,omitempty"`
 	Filename      string `json:"filename,omitempty"`
-	Project       string `json:"project,omitempty"`
 	TTL           int64  `json:"ttl,omitempty"`
 	DeleteEntries bool   `json:"delete_entries,omitempty"`
 }

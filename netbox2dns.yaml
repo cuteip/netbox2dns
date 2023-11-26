@@ -1,24 +1,23 @@
 config:
-  netbox: 
+  netbox:
     host:  "netbox.example.com"
     token: "01234567890abcdef"
 
   defaults:
-    project: "google-cloud-dns-project-name-123456"
     ttl: 300
-  
-  zones: 
+
+  zones:
     - name: "internal.example.com"
-      zonename: "internal-example-com"
-      zonetype: "clouddns"
+      zonetype: "zonefile"
+      filename: "/tmp/internal.example.com.zone"
     - name: "example.com"
       zonetype: "zonefile"
       filename: "/tmp/example.com.zone"
     - name: "10.in-addr.arpa"
-      zonename: "reverse-v4-10"
+      zonetype: "zonefile"
+      filename: "/tmp/10.in-addr.arpa.zone"
       delete_entries: true
-      zonetype: "clouddns"
     - name: "0.0.0.0.ip6.arpa"
-      zonename: "reverse-v6-0000"
+      zonetype: "zonefile"
+      filename: "/tmp/0.0.0.0.ip6.arpa.zone"
       delete_entries: true
-      zonetype: "clouddns"

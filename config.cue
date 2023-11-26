@@ -2,19 +2,6 @@
 // validation rules for each field.  See http://cuelang.org for
 // documenation.
 
-// A #CloudDNSZone is a DNS zone hosted on Google Cloud DNS.
-// Each field has a type ("string"), optionally a default (*),
-// and some constraints.
-#CloudDNSZone: {
-	zonetype:        "clouddns"
-	name:            string
-	zonename:        string
-	project:         *config.defaults.project | string
-	ttl:             *config.defaults.ttl | int & >60 & <=86400
-	delete_entries?: *false | bool // Remove entries that are missing
-	...
-}
-
 #ZoneFileZone: {
 	zonetype:        "zonefile"
 	name:            string
@@ -24,7 +11,7 @@
 	...
 }
 
-#Zone: #CloudDNSZone | #ZoneFileZone
+#Zone: #ZoneFileZone
 
 // This is the template for the actual configuration.
 config: {
@@ -49,9 +36,8 @@ config: {
 		token: string
 	}
 
-	// Defaults.  Notice the `*config.defaults.` clauses above, in #CloudDNSZone.
+	// Defaults.
 	defaults: {
 		ttl:       *300 | int
-		project?:  *"foo" | string
 	}
 }

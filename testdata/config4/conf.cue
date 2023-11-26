@@ -5,28 +5,27 @@ config: {
 	}
 
 	defaults: {
-		project: "random-string"
 		ttl:     300
 	}
 
 	zones: [
 		{name: "internal.example.com"
-			zonename: "internal-example-com"
- 			zonetype: "clouddns"
+			filename: "internal-example-com.zone"
+ 			zonetype: "zonefile"
 		},
 		{name: "example.com"
-			zonename: "example-com"
- 			zonetype: "clouddns"
+			filename: "example-com.zone"
+ 			zonetype: "zonefile"
 		},
 		{name: "10.in-addr.arpa"
-			zonename:       "reverse-v4-10"
+			filename:       "reverse-v4-10.zone"
 			delete_entries: true
- 			zonetype: "clouddns"
+ 			zonetype: "zonefile"
 		},
 		{name: "0.0.0.0.ip6.arpa"
-			zonename:       "reverse-v6-0000"
+			filename:       "reverse-v6-0000.zone"
 			delete_entries: true
- 			zonetype: "clouddns"
+ 			zonetype: "zonefile"
 		},
 	]
 }

@@ -10,7 +10,7 @@ import (
 	log "github.com/golang/glog"
 )
 
-// DNSProvider is an interface to a DNS provider backend, such a CloudDNS or ZoneFile.
+// DNSProvider is an interface to a DNS provider backend, such a ZoneFile.
 type DNSProvider interface {
 	ImportZone(cz *ConfigZone) (*Zone, error)
 	WriteRecord(cz *ConfigZone, r *Record) error
@@ -21,8 +21,6 @@ type DNSProvider interface {
 // NewDNSProvider creates a provider of the correct type for the described zone.
 func NewDNSProvider(ctx context.Context, cz *ConfigZone) (DNSProvider, error) {
 	switch cz.ZoneType {
-	case "clouddns":
-		return NewCloudDNS(ctx, cz)
 	case "zonefile":
 		return NewZoneFileDNS(ctx, cz)
 	default:

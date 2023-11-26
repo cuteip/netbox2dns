@@ -74,9 +74,6 @@ func valueTest(t *testing.T, cfg *Config, err error) {
 	if cfg.Netbox.Token != "changeme" {
 		t.Errorf("cfg.Netbox.Host wrong; got %q want %q", cfg.Netbox.Token, "changeme")
 	}
-	if cfg.Defaults.Project != "random-string" {
-		t.Errorf("cfg.Defaults.Project wrong; got %q want %q", cfg.Defaults.Project, "random-string")
-	}
 	if len(cfg.Zones) != 4 {
 		t.Errorf("len(cfg.Zones) wrong; got %d want 4", len(cfg.Zones))
 	}
@@ -90,17 +87,14 @@ func valueTest(t *testing.T, cfg *Config, err error) {
 	if z.Name != "0.0.0.0.ip6.arpa" {
 		t.Errorf("z.Name wrong; got %q want %q", z.Name, "0.0.0.0.ip6.arpa")
 	}
-	if z.ZoneType != "clouddns" {
-		t.Errorf("z.ZoneType wrong; got %q want %q", z.ZoneType, "clouddns")
+	if z.ZoneType != "zonefile" {
+		t.Errorf("z.ZoneType wrong; got %q want %q", z.ZoneType, "zonefile")
 	}
-	if z.ZoneName != "reverse-v6-0000" {
-		t.Errorf("z.ZoneName wrong; got %q want %q", z.ZoneName, "reverse-6-0000")
+	if z.Filename != "reverse-v6-0000.zone" {
+		t.Errorf("z.Filename wrong; got %q want %q", z.Filename, "reverse-6-0000.zone")
 	}
 	if z.TTL != 300 {
 		t.Errorf("z.TTL wrong; got %d want 300", z.TTL)
-	}
-	if z.Project != "random-string" {
-		t.Errorf("z.Project wrong; got %q want %q", z.Project, "random-string")
 	}
 	if z.DeleteEntries != true {
 		t.Errorf("z.DeleteEntries wrong; want true")

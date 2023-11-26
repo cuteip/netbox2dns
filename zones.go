@@ -62,8 +62,6 @@ func (z *Zones) AddZone(zone *Zone) {
 func (z *Zones) NewZone(cz *ConfigZone) {
 	zone := Zone{
 		Name:          cz.Name,
-		ZoneName:      cz.ZoneName,
-		Project:       cz.Project,
 		Filename:      cz.Filename,
 		DeleteEntries: cz.DeleteEntries,
 		TTL:           cz.TTL,
@@ -115,12 +113,9 @@ func (z *Zones) Compare(newer *Zones) []*ZoneDelta {
 	return deltas
 }
 
-// Zone represents a single DNS zone on a single provider (Google
-// Cloud DNS, fixed zone files, etc).
+// Zone represents a single DNS zone on a single provider (fixed zone files, etc).
 type Zone struct {
 	Name          string
-	ZoneName      string
-	Project       string
 	Filename      string
 	DeleteEntries bool
 	TTL           int64
@@ -169,8 +164,6 @@ func (z *Zone) Compare(newer *Zone, zd *ZoneDelta) {
 func (z *Zone) NewZoneDelta() *ZoneDelta {
 	zd := &ZoneDelta{
 		Name:          z.Name,
-		ZoneName:      z.ZoneName,
-		Project:       z.Project,
 		Filename:      z.Filename,
 		AddRecords:    make(map[string][]*Record),
 		RemoveRecords: make(map[string][]*Record),
@@ -182,8 +175,6 @@ func (z *Zone) NewZoneDelta() *ZoneDelta {
 // zone.  It shows added and removed records.
 type ZoneDelta struct {
 	Name          string
-	ZoneName      string
-	Project       string
 	Filename      string
 	AddRecords    map[string][]*Record
 	RemoveRecords map[string][]*Record
