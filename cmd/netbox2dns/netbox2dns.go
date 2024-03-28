@@ -8,6 +8,7 @@ import (
 
 	log "github.com/golang/glog"
 	nb "github.com/scottlaird/netbox2dns"
+	"github.com/scottlaird/netbox2dns/netboxlib"
 )
 
 var (
@@ -69,7 +70,8 @@ func main() {
 		newZones.NewZone(cz)
 	}
 
-	addrs, err := nb.GetNetboxIPAddresses(cfg.Netbox.Host, cfg.Netbox.Token)
+	netboxClient := netboxlib.NewClient(cfg.Netbox.Host, cfg.Netbox.Token)
+	addrs, err := netboxClient.GetNetboxIPAddresses(nil)
 	if err != nil {
 		log.Fatalf("Unable to fetch IP Addresses from Netbox: %v", err)
 	}

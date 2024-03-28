@@ -15,6 +15,7 @@ as they're able to handle incremental record additions and removals.
 
 - netbox2dns にて forward zone が管理されていない場合でもエラーにしない
 - ゾーンファイルが存在しない場合にエラーにせず空ファイルを作成する
+- Tag `netbox2dns_exclude` が付与された IP アドレスを除外する（ゾーンファイルに反映しない）
 
 ## Compiling
 

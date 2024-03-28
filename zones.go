@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	log "github.com/golang/glog"
-	"github.com/scottlaird/netboxlib/netbox"
+	"github.com/scottlaird/netbox2dns/netboxlib"
 )
 
 // ByLength is a wrapper for []string for sorting the string
@@ -245,19 +245,19 @@ func reverseName6(addr netip.Addr) string {
 
 // AddAddrs adds multiple addresses to a set of Zones.  This creates
 // both forward and reverse DNS entries.
-func (z *Zones) AddAddrs(addrs netbox.IPAddrs) error {
+func (z *Zones) AddAddrs(addrs []netboxlib.IpamIPAddress) error {
 	for _, addr := range addrs {
 		if addr.DNSName != "" && addr.Status == "active" {
 			forward := Record{
 				Name:    addr.DNSName + ".",
-				Rrdatas: []string{addr.Address.Addr().String()},
+				Rrdatas: []string{addr.Address.String()},
 			}
 			reverse := Record{
-				Name:    ReverseName(addr.Address.Addr()),
+				Name:    ReverseName(addr.Address),
 				Type:    "PTR",
 				Rrdatas: []string{addr.DNSName + "."},
 			}
-			if addr.Address.Addr().Is4() {
+			if addr.Address.Is4() {
 				forward.Type = "A"
 			} else {
 				forward.Type = "AAAA"
