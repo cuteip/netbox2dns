@@ -59,7 +59,12 @@ func (zfd *ZoneFileDNS) ImportZone(cz *ConfigZone) (*Zone, error) {
 			}
 
 			s := entry.Value.(string)
-			r.Rrdatas = []string{strings.TrimRight(s, ".") + "."}
+			if r.Type == "A" || r.Type == "AAAA" {
+				r.Rrdatas = []string{s}
+			} else {
+				// PTR, etc ... ?
+				r.Rrdatas = []string{strings.TrimRight(s, ".") + "."}
+			}
 
 			zone.AddRecord(&r)
 		}
