@@ -1,6 +1,6 @@
 module github.com/scottlaird/netbox2dns
 
-go 1.18
+go 1.22
 
 //replace github.com/scottlaird/netboxlib => ../netboxlib
 
