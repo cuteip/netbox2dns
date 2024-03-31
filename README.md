@@ -2,12 +2,12 @@
 
 original: https://github.com/scottlaird/netbox2dns
 
-netbox2dns is a tool for publishing DNS records from [Netbox](http://netbox.dev) data.
+netbox2dns is a tool for publishing DNS records from [NetBox](http://netbox.dev) data.
 
-Netbox provides a reasonable interface for managing and documenting IP
+NetBox provides a reasonable interface for managing and documenting IP
 addresses and network devices, but out of the box there's no good way
-to publish Netbox's data into DNS.  This tool is designed to publish
-A, AAAA, and PTR records from Netbox into zonefile.  It should
+to publish NetBox's data into DNS.  This tool is designed to publish
+A, AAAA, and PTR records from NetBox into zonefile.  It should
 be possible to add other DNS providers without too much work, as long
 as they're able to handle incremental record additions and removals.
 
@@ -60,12 +60,12 @@ zonetype is `zonefile` for text
 zone files.  See `config.cue` for an authoratative list of parameters
 per zone.
 
-To talk to Netbox, you'll need to provide your Netbox host, a Netbox
-API token with (at a minimum) read access to Netbox's IP Address data.
+To talk to NetBox, you'll need to provide your NetBox host, a NetBox
+API token with (at a minimum) read access to NetBox's IP Address data.
 
 Finally, list your zones. When adding new records, netbox2dns will add
 records to the *longest* matching zone name.  For the example above,
-with `internal.example.com` and `example.com`, if Netbox has a record
+with `internal.example.com` and `example.com`, if NetBox has a record
 for `router1.internal.example.com`, then it will be added to
 `internal.example.com`.  Any records that don't fix into a listed zone
 will be ignored.
@@ -82,11 +82,11 @@ are available.
 Short version: create a configuration file (see previous section),
 then run `netbox2dns push`.
 
-Upon startup, netbox2dns will fetch all IP Address records from Netbox
+Upon startup, netbox2dns will fetch all IP Address records from NetBox
 *and* all A/AAAA/PTR records from the listed zones.  netbox2dns
 ignores other record types, including SOA, NS, and CNAME.
 
-For each active IP address in Netbox that has a DNS name, netbox2dns
+For each active IP address in NetBox that has a DNS name, netbox2dns
 will try to add both forward and reverse DNS records.  Both IPv4
 and IPv6 should be handled automatically.
 
