@@ -40,6 +40,9 @@ func (c *Client) GetNetboxIPAddresses(queryParameters []string) ([]IpamIPAddress
 	tagn := "netbox2dns_exclude"
 	param.SetTagn(&tagn)
 
+	order := "address"
+	param.SetOrdering(&order)
+
 	res, err := c.api.Ipam.IpamIPAddressesList(param, nil)
 	if err != nil {
 		return nil, err

@@ -81,11 +81,9 @@ func main() {
 		}
 
 		for _, rec := range zone.Records {
-			for _, rr := range rec {
-				err = provider.WriteRecord(cfg.ZoneMap[zone.Name], rr)
-				if err != nil {
-					log.Errorf("Failed to update record: %v", err)
-				}
+			err = provider.WriteRecord(cfg.ZoneMap[zone.Name], rec)
+			if err != nil {
+				log.Errorf("Failed to update record: %v", err)
 			}
 		}
 		err = provider.Save(cfg.ZoneMap[zone.Name])

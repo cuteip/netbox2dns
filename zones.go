@@ -64,7 +64,7 @@ func (z *Zones) NewZone(cz *ConfigZone) {
 		Name:     cz.Name,
 		Filename: cz.Filename,
 		TTL:      cz.TTL,
-		Records:  make(map[string][]*Record),
+		Records:  []*Record{},
 	}
 	z.AddZone(&zone)
 }
@@ -87,7 +87,7 @@ type Zone struct {
 	Name     string
 	Filename string
 	TTL      int64
-	Records  map[string][]*Record
+	Records  []*Record
 }
 
 // AddRecord adds a single record to this zone.  It does not check
@@ -96,7 +96,7 @@ func (z *Zone) AddRecord(r *Record) {
 	if r.TTL == 0 {
 		r.TTL = z.TTL
 	}
-	z.Records[r.Name] = append(z.Records[r.Name], r)
+	z.Records = append(z.Records, r)
 }
 
 // ReverseName takes an IP address and returns the correct reverse DNS
