@@ -82,36 +82,6 @@ func (z *Zones) sortZones() {
 	z.sortedZones = zones
 }
 
-// Compare compares two Zones structures and returns a slice of
-// ZoneDeltas showing what has changed.
-func (z *Zones) Compare(newer *Zones) []*ZoneDelta {
-	zones := make(map[string]bool)
-	deltas := []*ZoneDelta{}
-
-	// Create union of zones in z and newer
-	for k := range z.Zones {
-		zones[k] = true
-	}
-	for k := range newer.Zones {
-		zones[k] = true
-	}
-
-	for k := range zones {
-		if z.Zones[k] == nil {
-			// Only in 'newer'
-			fmt.Printf("*** Added Zone %q\n", k)
-		} else if newer.Zones[k] == nil {
-			// Only in 'z'
-			fmt.Printf("*** Removed Zone %q\n", k)
-		} else {
-			zd := z.Zones[k].NewZoneDelta()
-			z.Zones[k].Compare(newer.Zones[k], zd)
-			deltas = append(deltas, zd)
-		}
-	}
-	return deltas
-}
-
 // Zone represents a single DNS zone on a single provider (fixed zone files, etc).
 type Zone struct {
 	Name     string
@@ -127,96 +97,6 @@ func (z *Zone) AddRecord(r *Record) {
 		r.TTL = z.TTL
 	}
 	z.Records[r.Name] = append(z.Records[r.Name], r)
-}
-
-// Compare compares two Zone structures and updates a ZoneDelta with
-// changes.
-func (z *Zone) Compare(newer *Zone, zd *ZoneDelta) {
-	records := make(map[string]bool)
-
-	// Create union of zones in z and newer
-	for k := range z.Records {
-		records[k] = true
-	}
-	for k := range newer.Records {
-		records[k] = true
-	}
-
-	for k := range records {
-		if z.Records[k] == nil {
-			// Only in 'newer'
-			zd.AddRecords[k] = newer.Records[k]
-		} else if newer.Records[k] == nil {
-			// Only in 'z'
-			zd.RemoveRecords[k] = z.Records[k]
-		} else {
-			CompareRecordSets(z.Records[k], newer.Records[k], zd)
-		}
-	}
-}
-
-// NewZoneDelta creates a new ZoneDelta.  This is used to track
-// changes between versions of a DNS zone.
-func (z *Zone) NewZoneDelta() *ZoneDelta {
-	zd := &ZoneDelta{
-		Name:          z.Name,
-		Filename:      z.Filename,
-		AddRecords:    make(map[string][]*Record),
-		RemoveRecords: make(map[string][]*Record),
-	}
-	return zd
-}
-
-// ZoneDelta describes the difference between two versions of the same
-// zone.  It shows added and removed records.
-type ZoneDelta struct {
-	Name          string
-	Filename      string
-	AddRecords    map[string][]*Record
-	RemoveRecords map[string][]*Record
-}
-
-// CompareRecordSets compares sets of records and updates a ZoneDelta
-// with results.
-func CompareRecordSets(older []*Record, newer []*Record, zd *ZoneDelta) {
-	// So, let's start by looking for identical Records.
-
-	o := make([]string, len(older))
-	n := make([]string, len(newer))
-
-	for i, r := range older {
-		o[i] = fmt.Sprintf("%+v", r)
-	}
-
-	for i, r := range newer {
-		n[i] = fmt.Sprintf("%+v", r)
-	}
-
-	// Now, let's start by removing duplicates.  These sets should
-	// be small, so O(N^2) is fine.
-	for i, r := range o {
-		for j, s := range n {
-			if r == s {
-				// Duplicate!  Remove from each set.
-				o[i] = ""
-				n[j] = ""
-			}
-		}
-	}
-
-	// At this point, any non-"" entries in o or n are actual deltas.
-	for i, r := range o {
-		if r != "" {
-			name := older[i].Name
-			zd.RemoveRecords[name] = append(zd.RemoveRecords[name], older[i])
-		}
-	}
-	for i, r := range n {
-		if r != "" {
-			name := newer[i].Name
-			zd.AddRecords[name] = append(zd.AddRecords[name], newer[i])
-		}
-	}
 }
 
 // ReverseName takes an IP address and returns the correct reverse DNS

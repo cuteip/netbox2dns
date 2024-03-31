@@ -9,7 +9,6 @@ require (
 	github.com/go-openapi/runtime v0.28.0
 	github.com/golang/glog v1.2.0
 	github.com/netbox-community/go-netbox/v3 v3.4.5
-	github.com/shuLhan/share v0.53.1
 )
 
 require (
@@ -38,7 +37,6 @@ require (
 	go.opentelemetry.io/otel/trace v1.24.0 // indirect
 	golang.org/x/net v0.22.0 // indirect
 	golang.org/x/sync v0.6.0 // indirect
-	golang.org/x/sys v0.18.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

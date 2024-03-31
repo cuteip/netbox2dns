@@ -16,14 +16,13 @@ var (
 )
 
 func usage() {
-	fmt.Printf("Usage: netbox2dns [--config=FILE] diff|push\n")
+	fmt.Printf("Usage: netbox2dns [--config=FILE] push\n")
 	os.Exit(1)
 }
 
 func main() {
 	flag.Parse()
 	args := flag.Args()
-	push := false
 
 	if len(args) != 1 {
 		usage()
@@ -31,9 +30,6 @@ func main() {
 
 	switch args[0] {
 	case "push":
-		push = true
-	case "diff":
-		// nothing
 	default:
 		usage()
 	}
@@ -55,14 +51,6 @@ func main() {
 	log.Infof("Config read: %+v", cfg)
 
 	ctx := context.Background()
-
-	// Fetch existing DNS zones and entries
-	zones, err := nb.ImportZones(ctx, cfg)
-	if err != nil {
-		log.Fatalf("Unable to import existing zones: %v", err)
-	}
-
-	log.Infof("Found %d zones", len(zones.Zones))
 
 	// Create new zones using data from Netbox
 	newZones := nb.NewZones()
@@ -86,60 +74,23 @@ func main() {
 
 	log.Infof("Created %d zones", len(newZones.Zones))
 
-	// Compare imported zones to created zones and produce a diff.
-	zd := zones.Compare(newZones)
-
-	removeCount := 0
-	addCount := 0
-
-	for _, zone := range zd {
-		changed := false
-
+	for _, zone := range newZones.Zones {
 		provider, err := nb.NewDNSProvider(ctx, cfg.ZoneMap[zone.Name])
 		if err != nil {
 			log.Fatalf("Failed to create DNS provider for %q: %v", zone.Name, err)
 		}
 
-		for _, rec := range zone.RemoveRecords {
+		for _, rec := range zone.Records {
 			for _, rr := range rec {
-				if rr.Type == "A" || rr.Type == "AAAA" || rr.Type == "PTR" {
-					removeCount++
-					fmt.Printf("- %s %s %d %v\n", rr.Name, rr.Type, rr.TTL, rr.Rrdatas)
-					if push {
-						err := provider.RemoveRecord(cfg.ZoneMap[zone.Name], rr)
-						changed = true
-						if err != nil {
-							log.Errorf("Failed to remove record: %v", err)
-						}
-					}
+				err = provider.WriteRecord(cfg.ZoneMap[zone.Name], rr)
+				if err != nil {
+					log.Errorf("Failed to update record: %v", err)
 				}
 			}
 		}
-		for _, rec := range zone.AddRecords {
-			for _, rr := range rec {
-				addCount++
-				fmt.Printf("+ %s %s %d %v\n", rr.Name, rr.Type, rr.TTL, rr.Rrdatas)
-				if push {
-					err = provider.WriteRecord(cfg.ZoneMap[zone.Name], rr)
-					changed = true
-					if err != nil {
-						log.Errorf("Failed to update record: %v", err)
-					}
-				}
-			}
+		err = provider.Save(cfg.ZoneMap[zone.Name])
+		if err != nil {
+			log.Fatalf("Failed to save: %v", err)
 		}
-
-		if changed {
-			err := provider.Save(cfg.ZoneMap[zone.Name])
-			if err != nil {
-				log.Fatalf("Failed to save: %v", err)
-			}
-		}
-	}
-
-	if push {
-		fmt.Printf("Push complete.  %d removals, %d additions found\n", removeCount, addCount)
-	} else {
-		fmt.Printf("Diff complete.  %d removals, %d additions found\n", removeCount, addCount)
 	}
 }

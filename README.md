@@ -16,6 +16,8 @@ as they're able to handle incremental record additions and removals.
 - netbox2dns にて forward zone が管理されていない場合でもエラーにしない
 - ゾーンファイルが存在しない場合にエラーにせず空ファイルを作成する
 - Tag `netbox2dns_exclude` が付与された IP アドレスを除外する（ゾーンファイルに反映しない）
+- 求められる機能を減らし、NetBox の情報をゾーンファイルに書き込むことだけに
+  - `push` オプションのみにして、設定ファイルにて指定されるゾーンファイルは netbox2dns によって管理されている前提の構成に
 
 ## Compiling
 
@@ -78,8 +80,7 @@ are available.
 ## Use
 
 Short version: create a configuration file (see previous section),
-then run `netbox2dns diff`, followed by `netbox2dns push` if the diff
-looks acceptable.
+then run `netbox2dns push`.
 
 Upon startup, netbox2dns will fetch all IP Address records from Netbox
 *and* all A/AAAA/PTR records from the listed zones.  netbox2dns
@@ -89,6 +90,6 @@ For each active IP address in Netbox that has a DNS name, netbox2dns
 will try to add both forward and reverse DNS records.  Both IPv4
 and IPv6 should be handled automatically.
 
-This tool has 2 operating modes, `diff` and `push`.  `diff` shows
-significant differences between DNS zones and Netbox, and `push` makes
-changes to DNS.
+When you run `netbox2dns push`, netbox2dns will generate zone files.
+At that time, the contents already written in the zone file will be deleted.
+Generated zone files are expected to be included by `$INCLUDE` directive.
